@@ -3,7 +3,7 @@
 
 # Installation
 
-    pip install git+
+    pip install git+https://github.com/Tesla-Xiao/mydemo.git
 
 # Usage
 
