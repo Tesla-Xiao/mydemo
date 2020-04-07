@@ -1,0 +1,8 @@
+README.md
+setup.py
+mydemo.egg-info/PKG-INFO
+mydemo.egg-info/SOURCES.txt
+mydemo.egg-info/dependency_links.txt
+mydemo.egg-info/top_level.txt
+src/_cfunction.c
+src/cfunction.c

@@ -1,2 +1,2 @@
 
-void mycfunc(double *x, int *y, double constant1, int constant2, double *output);
+void mycfunc(double *array_d, int *array_i, double d, int i, char *array_c, double *output);

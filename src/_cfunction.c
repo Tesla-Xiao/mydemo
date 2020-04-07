@@ -1,16 +1,15 @@
 #include <Python.h>
 #include "cfunction.h"
 #include <numpy/arrayobject.h>
-#include <stdlib.h>
-#include <stdio.h>
 
 static PyObject *py_mycfunc(PyObject *self, PyObject *args) {
     
     PyObject *py_x, *py_y;
     double number_a;
     int number_b;
+    char *array_c;
 
-    if (!PyArg_ParseTuple(args,"OOdi", &py_x, &py_y, &number_a, &number_b)) {
+    if (!PyArg_ParseTuple(args,"OOdis", &py_x, &py_y, &number_a, &number_b, &array_c)) {
         return NULL;
     }
 
@@ -31,8 +30,14 @@ static PyObject *py_mycfunc(PyObject *self, PyObject *args) {
     px = (int)PyArray_DIM(py_x_array, 1);
     ny = (int)PyArray_DIM(py_y_array, 0);
 
+    // Exception Handling
     if ( nx !=  ny ) {
-        PyErr_SetString(PyExc_RuntimeError, "Dimensions don't match!!");
+        PyErr_SetString(PyExc_ValueError, "Dimensions don't match!!");
+        return NULL;
+    }
+
+    if ( strcmp(array_c, "cos") != 0 && strcmp(array_c, "sin") != 0) {
+        PyErr_SetString(PyExc_TypeError, "Only support cos function and sin function now.");
         return NULL;
     }
 
@@ -40,16 +45,16 @@ static PyObject *py_mycfunc(PyObject *self, PyObject *args) {
     double *x = (double*) PyArray_DATA(py_x_array);
     int    *y = (int*)    PyArray_DATA(py_y_array);
 
-    // Maybe you need to create an output array.
+    // Create an output array.
     double *c_output;
-    c_output = (double*)malloc(sizeof(double)*ny);
+    c_output = (double*)malloc(sizeof(double)*2);
 
     // Call the external C function.
-    mycfunc( x, y, number_a, number_b, c_output );
+    mycfunc( x, y, number_a, number_b, array_c, c_output );
 
 
     // Create a numpy array and return it.
-    npy_intp dims[1] = {ny};
+    npy_intp dims[1] = {2};
     PyObject *ret = PyArray_SimpleNewFromData(1, dims, NPY_DOUBLE, c_output);
 
     // Clean up. 
